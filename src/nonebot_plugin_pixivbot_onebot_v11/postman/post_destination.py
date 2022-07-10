@@ -6,14 +6,14 @@ from nonebot.adapters.onebot.v11 import Bot, Message, Event, MessageSegment, Mes
     GroupMessageEvent, NotifyEvent
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
-    PostDestinationFactory as BasePostDestinationFactory, PostIdentifier
+    PostDestinationFactory as BasePostDestinationFactory
 
 
 class PostDestination(BasePostDestination[int, int, Bot, Message]):
     def __init__(self, bot: Bot, user_id: Optional[int] = None,
                  group_id: Optional[int] = None,
                  reply_to_message_id: Optional[int] = None):
-        super().__init__(bot, PostIdentifier(user_id=user_id, group_id=group_id))
+        super().__init__(bot, user_id, group_id)
         self.reply_to_message_id = reply_to_message_id
 
     async def post(self, message: Union[Message, Sequence[Message]]):
@@ -72,8 +72,8 @@ class PostDestination(BasePostDestination[int, int, Bot, Message]):
 
 @context.register_singleton()
 class PostDestinationFactory(BasePostDestinationFactory[int, int, Bot, Message]):
-    def from_id(self, bot: Bot, identifier: PostIdentifier[int, int]) -> PostDestination:
-        return PostDestination(bot, identifier.user_id, identifier.group_id)
+    def from_id(self, bot: Bot, user_id: int, group_id: int) -> PostDestination:
+        return PostDestination(bot, user_id, group_id)
 
     def from_message_event(self, bot: Bot, event: Event) -> PostDestination:
         if isinstance(event, MessageEvent) or isinstance(event, NotifyEvent):

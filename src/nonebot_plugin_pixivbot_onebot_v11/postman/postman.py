@@ -4,7 +4,7 @@ from typing import Optional, Union, Sequence
 
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageSegment
 from nonebot_plugin_pixivbot import context
-from nonebot_plugin_pixivbot.data_source.pixiv import PixivDataSource
+from nonebot_plugin_pixivbot.data import PixivRepo
 from nonebot_plugin_pixivbot.model import Illust
 from nonebot_plugin_pixivbot.postman import Postman as BasePostman
 from nonebot_plugin_pixivbot.utils.config import Config
@@ -14,7 +14,7 @@ from nonebot_plugin_pixivbot_onebot_v11.postman.post_destination import PostDest
 @context.register_singleton()
 class Postman(BasePostman[int, int, Bot, Message]):
     conf = context.require(Config)
-    data_source = context.require(PixivDataSource)
+    repo = context.require(PixivRepo)
 
     async def make_illust_msg(self, illust: Illust,
                               number: Optional[int] = None) -> Message:
@@ -29,7 +29,7 @@ class Postman(BasePostman[int, int, Bot, Message]):
                 return Message()
         else:
             with BytesIO() as bio:
-                bio.write(await self.data_source.image(illust))
+                bio.write(await self.repo.image(illust))
                 msg.append(MessageSegment.image(bio))
 
         if number is not None:
