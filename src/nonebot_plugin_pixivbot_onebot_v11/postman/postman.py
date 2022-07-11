@@ -1,78 +1,63 @@
-from asyncio import create_task
-from io import BytesIO
-from typing import Optional, Union, Sequence
-
-from nonebot.adapters.onebot.v11 import Bot, Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot_plugin_pixivbot import context
-from nonebot_plugin_pixivbot.data import PixivRepo
-from nonebot_plugin_pixivbot.model import Illust
+from nonebot_plugin_pixivbot.config.block_action import BlockAction
 from nonebot_plugin_pixivbot.postman import Postman as BasePostman
-from nonebot_plugin_pixivbot.utils.config import Config
+from nonebot_plugin_pixivbot.postman.model.illust_message import IllustMessageModel
+from nonebot_plugin_pixivbot.postman.model.illust_messages import IllustMessagesModel
+
 from nonebot_plugin_pixivbot_onebot_v11.postman.post_destination import PostDestination
 
 
 @context.register_singleton()
-class Postman(BasePostman[int, int, Bot, Message]):
-    conf = context.require(Config)
-    repo = context.require(PixivRepo)
+class Postman(BasePostman[int, int]):
 
-    async def make_illust_msg(self, illust: Illust,
-                              number: Optional[int] = None) -> Message:
+    @staticmethod
+    def make_illust_msg(model: IllustMessageModel) -> Message:
         msg = Message()
 
-        if illust.has_tags(self.conf.pixiv_block_tags):
-            if self.conf.pixiv_block_action == "no_image":
-                msg.append("该画像因含有不可描述的tag而被自主规制\n")
-            elif self.conf.pixiv_block_action == "completely_block":
-                return Message(MessageSegment.text("该画像因含有不可描述的tag而被自主规制"))
-            elif self.conf.pixiv_block_action == "no_reply":
-                return Message()
-        else:
-            with BytesIO() as bio:
-                bio.write(await self.repo.image(illust))
-                msg.append(MessageSegment.image(bio))
+        if model.block_action is not None:
+            if model.block_action == BlockAction.no_image:
+                msg.append(model.block_message)
+            elif model.block_action == BlockAction.completely_block:
+                msg.append(model.block_message)
+                return msg
+            elif model.block_action == BlockAction.no_reply:
+                return msg
+            else:
+                raise ValueError(f"invalid block_action: {model.block_action}")
 
-        if number is not None:
-            msg.append(f"#{number}")
-        msg.append(f"「{illust.title}」\n"
-                   f"作者：{illust.user.name}\n"
-                   f"发布时间：{illust.create_date.strftime('%Y-%m-%d %H:%M:%S')}\n"
-                   f"https://www.pixiv.net/artworks/{illust.id}")
+        msg.append(MessageSegment.image(model.image))
+
+        if model.number is not None:
+            msg.append(f"#{model.number}")
+        msg.append(f"「{model.title}」\n"
+                   f"作者：{model.author}\n"
+                   f"发布时间：{model.create_time}\n"
+                   f"{model.link}")
         return msg
 
-    async def send_message(self, message: Union[str, Message],
-                           *, post_dest: PostDestination):
-        if isinstance(message, str):
-            message = Message(message)
+    async def send_plain_text(self, message: str,
+                              *, post_dest: PostDestination):
+        message = Message([MessageSegment.text(message)])
         await post_dest.post(message)
 
-    async def send_illust(self, illust: Illust,
-                          header: Union[str, Message, None] = None,
-                          number: Optional[int] = None,
+    async def send_illust(self, model: IllustMessageModel,
                           *, post_dest: PostDestination):
         message = Message()
-        if header is not None:
-            if header is str:
-                message.append(MessageSegment.text(header))
-            else:
-                message.extend(header)
+        if model.header is not None:
+            message.append(MessageSegment.text(model.header))
 
-        message.extend(await self.make_illust_msg(illust, number))
+        message.extend(self.make_illust_msg(model))
         await post_dest.post(message)
 
-    async def send_illusts(self, illusts: Sequence[Illust],
-                           header: Union[str, Message, None] = None,
-                           number: Optional[int] = None,
+    async def send_illusts(self, model: IllustMessagesModel,
                            *, post_dest: PostDestination):
-        if len(illusts) == 1:
-            await self.send_illust(illusts[0], header, number, post_dest=post_dest)
+        if len(model.messages) == 1:
+            await self.send_illust(model.flat_first(), post_dest=post_dest)
         else:
-            msg_fut = [create_task(self.make_illust_msg(illust, number + i if number is not None else None))
-                       for i, illust in enumerate(illusts)]
-
-            messages = [Message([MessageSegment.text(header)])]
-            for fut in msg_fut:
-                messages.append(await fut)
+            messages = [Message([MessageSegment.text(model.header)])]
+            for sub_model in model.messages:
+                messages.append(self.make_illust_msg(sub_model))
 
             await post_dest.post(messages)
 

@@ -15,5 +15,5 @@ post_dest_factory = context.require(PostDestinationFactory)
 @mat.handle()
 async def handle_super_command(bot: Bot, event: Event, state: T_State, matcher: Matcher):
     args = str(event.get_message()).strip().split()[1:]
-    post_dest = post_dest_factory.from_message_event(bot, event)
+    post_dest = post_dest_factory.from_message_event(event)
     await cmd_handler.handle(args, post_dest=post_dest)
