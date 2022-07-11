@@ -100,13 +100,13 @@ if random_illust_query_handler.enabled():
 # ======== more ========
 more_handler = context.require(MoreHandler)
 if more_handler.enabled():
-    mat = on_regex("^还要$", priority=1, block=True)
+    mat = on_regex("^还要((.*)张)?$", priority=1, block=True)
 
 
     @mat.handle()
     async def handle_more(bot: Bot, event: Event, state: T_State, matcher: Matcher):
         post_dest = post_dest_factory.from_message_event(event)
-        await more_handler.handle(post_dest=post_dest)
+        await more_handler.handle(count=get_count(state, 1), post_dest=post_dest)
 
 # ======== random_related_illust_query ========
 random_related_illust_query_handler = context.require(RandomRelatedIllustHandler)
