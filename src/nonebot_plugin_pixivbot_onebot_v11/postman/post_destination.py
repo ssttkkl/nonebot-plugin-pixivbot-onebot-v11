@@ -7,7 +7,6 @@ from nonebot.adapters.onebot.v11 import Bot, Message, Event, MessageSegment, Mes
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
     PostDestinationFactory as BasePostDestinationFactory
-from nonebot_plugin_pixivbot.postman.post_destination import GID, UID
 from nonebot_plugin_pixivbot.utils.nonebot import get_adapter_name
 
 
@@ -24,11 +23,11 @@ class PostDestination(BasePostDestination[int, int]):
         return get_adapter_name()
 
     @property
-    def user_id(self) -> UID:
+    def user_id(self) -> Optional[int]:
         return self._user_id
 
     @property
-    def group_id(self) -> GID:
+    def group_id(self) -> Optional[int]:
         return self._group_id
 
     async def post(self, message: Union[Message, Sequence[Message]]):
@@ -91,7 +90,7 @@ class PostDestination(BasePostDestination[int, int]):
 
 @context.register_singleton()
 class PostDestinationFactory(BasePostDestinationFactory[int, int]):
-    def build(self, user_id: UID, group_id: GID) -> PostDestination:
+    def build(self, user_id: Optional[int], group_id: Optional[int]) -> PostDestination:
         return PostDestination(user_id, group_id)
 
     def from_message_event(self, event: Event) -> PostDestination:
