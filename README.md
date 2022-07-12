@@ -1,4 +1,4 @@
-nonebot_plugin_pixivbot-onebot-v11
+nonebot-plugin-pixivbot-onebot-v11
 =====
 
 Onebot V11协议版本的PixivBot
