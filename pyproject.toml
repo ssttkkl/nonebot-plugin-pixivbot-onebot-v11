@@ -1,28 +1,24 @@
-[project]
+[tool.poetry]
 name = "nonebot-plugin-pixivbot-onebot-v11"
 version = "1.1.0-alpha1"
-description = "Nonebot Plugin Pixivbot (Onebot V11)"
-authors = [
-    {email = "huang.wen.long@hotmail.com", name = "ssttkkl"}
-]
+description = "Nonebot Plugin PixivBot (Onebot V11)"
+authors = ["ssttkkl <huang.wen.long@hotmail.com>"]
 readme = "README.md"
-license = {file = "LICENSE"}
-requires-python = ">=3.9"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-dependencies = [
-    "nonebot2 ~= 2.0.0b4",
-    "nonebot-plugin-pixivbot == 1.1.0a1",
-    "nonebot-adapter-onebot ~= 2.1.1"
+license = "MIT"
+repository = "https://github.com/ssttkkl/nonebot-plugin-pixivbot-onebot-v11"
+packages = [
+    { include = "nonebot_plugin_pixivbot_onebot_v11", from = "src" },
 ]
 
-[project.urls]
-"Homepage" = "https://github.com/ssttkkl/nonebot-plugin-pixivbot-onebot-v11"
-"Bug Tracker" = "https://github.com/ssttkkl/nonebot-plugin-pixivbot-onebot-v11/issues"
+[tool.poetry.dependencies]
+python = "^3.9"
+nonebot-adapter-onebot = "^2.1.1"
+nonebot-plugin-pixivbot = "1.1.0a1"
+
+[tool.poetry.dev-dependencies]
+
+
 
 [build-system]
-requires = ["setuptools~=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
