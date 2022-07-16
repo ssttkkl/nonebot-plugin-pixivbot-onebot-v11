@@ -1,2 +1,3 @@
-from . import common_command
-from . import super_command
+from .poke import PokeQuery
+
+__all__ = ("PokeQuery",)

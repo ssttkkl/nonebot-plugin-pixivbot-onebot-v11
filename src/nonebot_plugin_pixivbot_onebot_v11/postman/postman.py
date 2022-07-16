@@ -1,6 +1,6 @@
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot_plugin_pixivbot import context
-from nonebot_plugin_pixivbot.config.block_action import BlockAction
+from nonebot_plugin_pixivbot.enums import BlockAction
 from nonebot_plugin_pixivbot.postman import Postman as BasePostman
 from nonebot_plugin_pixivbot.postman.model.illust_message import IllustMessageModel
 from nonebot_plugin_pixivbot.postman.model.illust_messages import IllustMessagesModel
