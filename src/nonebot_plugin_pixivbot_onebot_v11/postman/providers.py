@@ -1,5 +1,5 @@
+from nonebot_plugin_pixivbot.context import Context
 from nonebot_plugin_pixivbot.postman import Postman as BasePostman, PostDestinationFactory as BasePostDestinationFactory
-from nonebot_plugin_pixivbot.utils.context import Context
 
 from nonebot_plugin_pixivbot_onebot_v11.postman import Postman, PostDestinationFactory
 

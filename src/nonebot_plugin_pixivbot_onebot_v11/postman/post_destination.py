@@ -2,7 +2,7 @@ import dataclasses
 from typing import Optional, Sequence, Union
 
 from nonebot import logger, get_bot
-from nonebot.adapters.onebot.v11 import Bot, Message, Event, MessageSegment, MessageEvent, \
+from nonebot.adapters.onebot.v11 import Message, Event, MessageSegment, MessageEvent, \
     GroupMessageEvent, NotifyEvent
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
