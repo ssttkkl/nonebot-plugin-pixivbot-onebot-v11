@@ -2,8 +2,7 @@ import dataclasses
 from typing import Optional, Sequence, Union
 
 from nonebot import logger, get_bot
-from nonebot.adapters.onebot.v11 import Message, Event, MessageSegment, MessageEvent, \
-    GroupMessageEvent, NotifyEvent
+from nonebot.adapters.onebot.v11 import Message, Event, MessageSegment
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
     PostDestinationFactory as BasePostDestinationFactory
@@ -94,19 +93,11 @@ class PostDestinationFactory(BasePostDestinationFactory[int, int]):
         return PostDestination(user_id, group_id)
 
     def from_event(self, event: Event) -> PostDestination:
-        if isinstance(event, MessageEvent) or isinstance(event, NotifyEvent):
-            user_id = event.user_id
-        else:
-            user_id = None
+        user_id = getattr(event, "user_id", None)
+        group_id = getattr(event, "group_id", None)
+        reply_to_message_id = getattr(event, "message_id", None)
 
-        if isinstance(event, GroupMessageEvent) or isinstance(event, NotifyEvent):
-            group_id = event.group_id
-        else:
-            group_id = None
-
-        if isinstance(event, MessageEvent):
-            reply_to_message_id = event.message_id
-        else:
-            reply_to_message_id = None
+        if not user_id and not group_id:
+            raise ValueError("user_id 和 group_id 不能同时为 None")
 
         return PostDestination(user_id, group_id, reply_to_message_id)
