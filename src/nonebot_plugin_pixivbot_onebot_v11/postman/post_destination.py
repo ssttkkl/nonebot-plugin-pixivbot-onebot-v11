@@ -93,7 +93,7 @@ class PostDestinationFactory(BasePostDestinationFactory[int, int]):
     def build(self, user_id: Optional[int], group_id: Optional[int]) -> PostDestination:
         return PostDestination(user_id, group_id)
 
-    def from_message_event(self, event: Event) -> PostDestination:
+    def from_event(self, event: Event) -> PostDestination:
         if isinstance(event, MessageEvent) or isinstance(event, NotifyEvent):
             user_id = event.user_id
         else:
