@@ -14,4 +14,10 @@ def post_destination_factory_provider(context: Context):
 
 providers = (postman_provider, post_destination_factory_provider)
 
-__all__ = ("providers",)
+
+def provide(context: Context):
+    for p in providers:
+        p(context)
+
+
+__all__ = ("provide",)

@@ -12,8 +12,9 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
+nonebot2 = "^2.0.0-beta.4"
 nonebot-adapter-onebot = "^2.1.1"
-nonebot-plugin-pixivbot = "1.1.0a2"
+nonebot-plugin-pixivbot = "1.1.0-alpha.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"

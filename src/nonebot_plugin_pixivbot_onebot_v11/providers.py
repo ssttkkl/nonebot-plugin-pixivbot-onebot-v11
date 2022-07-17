@@ -1,9 +1,9 @@
-from nonebot_plugin_pixivbot import context
+from nonebot_plugin_pixivbot.context import Context
 
-from nonebot_plugin_pixivbot_onebot_v11.handler.providers import providers as handler_providers
-from nonebot_plugin_pixivbot_onebot_v11.postman.providers import providers as postman_providers
+from .postman import providers as postman_providers
+from .protocol_dep import providers as protocol_dep_providers
 
-providers = (*handler_providers, *postman_providers,)
 
-for p in providers:
-    p(context)
+def provide(context: Context):
+    postman_providers.provide(context)
+    protocol_dep_providers.provide(context)
