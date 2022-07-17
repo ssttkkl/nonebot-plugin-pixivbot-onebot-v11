@@ -1,15 +1,18 @@
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.enums import BlockAction
-from nonebot_plugin_pixivbot.postman import Postman as BasePostman
+from nonebot_plugin_pixivbot.postman import Postman as BasePostman, PostmanManager
 from nonebot_plugin_pixivbot.postman.model.illust_message import IllustMessageModel
 from nonebot_plugin_pixivbot.postman.model.illust_messages import IllustMessagesModel
 
 from nonebot_plugin_pixivbot_onebot_v11.postman.post_destination import PostDestination
 
 
-@context.register_singleton()
+@context.require(PostmanManager).register
 class Postman(BasePostman[int, int]):
+    @classmethod
+    def adapter(cls) -> str:
+        return "onebot"
 
     @staticmethod
     def make_illust_msg(model: IllustMessageModel) -> Message:
