@@ -5,5 +5,5 @@ from .providers import *
 
 provide(context)
 
-# ================ register command ================
-from .command import *
+# ================ register query ================
+from .query import *
