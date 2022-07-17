@@ -5,7 +5,7 @@ from nonebot import logger, get_bot
 from nonebot.adapters.onebot.v11 import Message, Event, MessageSegment
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
-    PostDestinationFactory as BasePostDestinationFactory
+    PostDestinationFactory as BasePostDestinationFactory, PostDestinationFactoryManager
 from nonebot_plugin_pixivbot.utils.nonebot import get_adapter_name
 
 
@@ -87,8 +87,12 @@ class PostDestination(BasePostDestination[int, int]):
             )
 
 
-@context.register_singleton()
+@context.require(PostDestinationFactoryManager).register
 class PostDestinationFactory(BasePostDestinationFactory[int, int]):
+    @classmethod
+    def adapter(cls) -> str:
+        return "onebot"
+
     def build(self, user_id: Optional[int], group_id: Optional[int]) -> PostDestination:
         return PostDestination(user_id, group_id)
 
