@@ -5,12 +5,13 @@ from nonebot import on_notice
 from nonebot.adapters import Event
 from nonebot.adapters.onebot.v11 import PokeNotifyEvent
 from nonebot_plugin_pixivbot import context
-from nonebot_plugin_pixivbot.config import Config
 from nonebot_plugin_pixivbot.query import Query, QueryManager
 from nonebot_plugin_pixivbot.query.delegateion_query import DelegationQuery
 from nonebot_plugin_pixivbot.query.random_bookmark import RandomBookmarkQuery
 from nonebot_plugin_pixivbot.query.random_recommended_illust import RandomRecommendedIllustQuery
 from nonebot_plugin_pixivbot.query.ranking import RankingQuery
+
+from nonebot_plugin_pixivbot_onebot_v11.config import OnebotV11Config
 
 
 async def _group_poke(event: Event) -> bool:
@@ -19,7 +20,7 @@ async def _group_poke(event: Event) -> bool:
 
 @context.require(QueryManager).query
 class PokeQuery(DelegationQuery):
-    conf = context.require(Config)
+    conf = context.require(OnebotV11Config)
 
     query_mapping: Dict[str, Type[Query]] = {
         "ranking": RankingQuery,
