@@ -1,9 +1,16 @@
-# ================= provide beans =================
-from nonebot_plugin_pixivbot import context
+"""
+nonebot-plugin-pixivbot-onebot-v11
 
-from .providers import *
+@Author         : ssttkkl
+@License        : MIT
+@GitHub         : https://github.com/ssttkkl/nonebot-plugin-pixivbot-onebot-v11
+"""
 
-provide(context)
+# ======= register Postman and PostDestination =======
+from .postman import Postman, PostDestinationFactory
 
-# ================ register query ================
+# =============== register protocol_dep ===============
+from .protocol_dep.user_authenticator import UserAuthenticator
+
+# ================== register query ==================
 from .query import *

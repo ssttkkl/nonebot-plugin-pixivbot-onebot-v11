@@ -5,11 +5,8 @@ from nonebot import on_notice
 from nonebot.adapters import Event
 from nonebot.adapters.onebot.v11 import PokeNotifyEvent
 from nonebot_plugin_pixivbot import context
-from nonebot_plugin_pixivbot.query import Query, QueryManager
-from nonebot_plugin_pixivbot.query.delegateion_query import DelegationQuery
-from nonebot_plugin_pixivbot.query.random_bookmark import RandomBookmarkQuery
-from nonebot_plugin_pixivbot.query.random_recommended_illust import RandomRecommendedIllustQuery
-from nonebot_plugin_pixivbot.query.ranking import RankingQuery
+from nonebot_plugin_pixivbot.query import Query, DelegationQuery, RandomBookmarkQuery, \
+    RandomRecommendedIllustQuery, RankingQuery, register_query
 
 from nonebot_plugin_pixivbot_onebot_v11.config import OnebotV11Config
 
@@ -18,7 +15,7 @@ async def _group_poke(event: Event) -> bool:
     return isinstance(event, PokeNotifyEvent) and event.is_tome()
 
 
-@context.require(QueryManager).query
+@register_query(context)
 class PokeQuery(DelegationQuery):
     conf = context.require(OnebotV11Config)
 
