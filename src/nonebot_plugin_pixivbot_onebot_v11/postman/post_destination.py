@@ -10,7 +10,7 @@ from nonebot_plugin_pixivbot.utils.nonebot import get_adapter_name
 
 
 class PostDestination(BasePostDestination[int, int]):
-    def __init__(self, bot: Bot, 
+    def __init__(self, bot: Bot,
                  user_id: Optional[int] = None,
                  group_id: Optional[int] = None,
                  reply_to_message_id: Optional[int] = None):
@@ -30,6 +30,9 @@ class PostDestination(BasePostDestination[int, int]):
     @property
     def group_id(self) -> Optional[int]:
         return self._group_id
+
+    def normalize(self) -> "PostDestination":
+        return PostDestination(self.bot, self.user_id, self.group_id)
 
     async def post(self, message: Union[Message, Sequence[Message]]):
         if len(message) == 0:
