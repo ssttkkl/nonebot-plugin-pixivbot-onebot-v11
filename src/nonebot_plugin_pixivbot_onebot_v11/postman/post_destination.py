@@ -4,9 +4,9 @@ from typing import Optional, Sequence, Union
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import Bot, Message, Event, MessageSegment
 from nonebot_plugin_pixivbot import context
+from nonebot_plugin_pixivbot.model import PostIdentifier
 from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
     PostDestinationFactory as BasePostDestinationFactory, PostDestinationFactoryManager
-from nonebot_plugin_pixivbot.utils.nonebot import get_adapter_name
 
 
 class PostDestination(BasePostDestination[int, int]):
@@ -15,21 +15,12 @@ class PostDestination(BasePostDestination[int, int]):
                  group_id: Optional[int] = None,
                  reply_to_message_id: Optional[int] = None):
         self.bot = bot
-        self._user_id = user_id
-        self._group_id = group_id
+        self._identifier = PostIdentifier("onebot", user_id, group_id)
         self.reply_to_message_id = reply_to_message_id
 
     @property
-    def adapter(self) -> str:
-        return get_adapter_name()
-
-    @property
-    def user_id(self) -> Optional[int]:
-        return self._user_id
-
-    @property
-    def group_id(self) -> Optional[int]:
-        return self._group_id
+    def identifier(self):
+        return self._identifier
 
     def normalize(self) -> "PostDestination":
         return PostDestination(self.bot, self.user_id, self.group_id)
