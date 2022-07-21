@@ -22,7 +22,7 @@ class PostDestination(BasePostDestination[int, int]):
     def identifier(self):
         return self._identifier
 
-    def normalize(self) -> "PostDestination":
+    def normalized(self) -> "PostDestination":
         return PostDestination(self.bot, self.user_id, self.group_id)
 
     async def post(self, message: Union[Message, Sequence[Message]]):
