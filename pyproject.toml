@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-pixivbot-onebot-v11"
-version = "1.1.0-alpha2"
+version = "1.1.0-alpha2-post1"
 description = "Nonebot Plugin PixivBot (Onebot V11)"
 authors = ["ssttkkl <huang.wen.long@hotmail.com>"]
 readme = "README.md"
@@ -14,7 +14,7 @@ packages = [
 python = "^3.9"
 nonebot2 = "^2.0.0-beta.4"
 nonebot-adapter-onebot = "^2.1.1"
-nonebot-plugin-pixivbot = "1.1.0-alpha.2"
+nonebot-plugin-pixivbot = "~1.1.0-alpha.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
