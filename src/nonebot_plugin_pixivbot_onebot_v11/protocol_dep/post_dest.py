@@ -5,7 +5,7 @@ from nonebot import logger
 from nonebot.adapters.onebot.v11 import Bot, Message, Event, MessageSegment
 from nonebot_plugin_pixivbot import context
 from nonebot_plugin_pixivbot.model import PostIdentifier
-from nonebot_plugin_pixivbot.postman import PostDestination as BasePostDestination, \
+from nonebot_plugin_pixivbot.protocol_dep.post_dest import PostDestination as BasePostDestination, \
     PostDestinationFactory as BasePostDestinationFactory, PostDestinationFactoryManager
 
 
