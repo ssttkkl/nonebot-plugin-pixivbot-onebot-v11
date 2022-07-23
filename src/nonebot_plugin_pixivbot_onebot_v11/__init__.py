@@ -6,11 +6,10 @@ nonebot-plugin-pixivbot-onebot-v11
 @GitHub         : https://github.com/ssttkkl/nonebot-plugin-pixivbot-onebot-v11
 """
 
-# ======= register Postman and PostDestination =======
-from .postman import Postman, PostDestinationFactory
-
 # =============== register protocol_dep ===============
-from .protocol_dep.user_authenticator import UserAuthenticator
+from .protocol_dep.authenticator import Authenticator
+from .protocol_dep.post_dest import PostDestinationFactory
+from .protocol_dep.postman import Postman
 
 # ================== register query ==================
 from .query import *
