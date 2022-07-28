@@ -10,7 +10,7 @@ Onebot V11协议版本的PixivBot
 1. 参考[安装 | NoneBot](https://v2.nonebot.dev/docs/start/installation)安装NoneBot；
 2. 参考[创建项目 | NoneBot](https://v2.nonebot.dev/docs/tutorial/create-project)创建一个Bot实例；
 5. 运行`nb plugin install nonebot_plugin_pixivbot-onebot-v11`安装本插件；
-6. 安装MongoDB，并创建一个数据库供应用使用；
+6. 安装MongoDB，并创建一个数据库及用户供应用使用；
 7. 在.env.prod中修改配置（参考下方）；
 
 ## 触发语句
@@ -51,13 +51,6 @@ Onebot V11协议版本的PixivBot
 - **/pixivbot unbind**：解绑Pixiv账号
 - **/pixivbot invalidate_cache**：清除缓存
 
-## 注意事项
-
-1. 必须登录pixiv账号并获取refresh_token才能使用。
-2. 尽管作者已经尽力以高并发作为目标进行开发，但由于向Pixiv发送**搜索请求**太频繁会撞Rate Limit、收到警告甚至被ban号，因此不保证并发用户数量较大时还能够正常使用。（或者只开放部分功能当普通的涩图bot）
-3. 根据1和2，建议使用小号登录。
-4. 学业繁忙，issue可能不会及时处理。
-
 ## 配置
 
 最小配置：
@@ -67,8 +60,11 @@ pixiv_mongo_conn_url=  # MongoDB连接URL，格式：mongodb://<用户名>:<密�
 pixiv_mongo_database_name=  # 连接的MongoDB数据库
 ```
 
-完整配置（除最小配置出现的配置项以外都是可选项，给出的是默认值）：
+完整配置（除最小配置出现的配置项以外都是可选项，给出的是默认值）（NoneBot配置项这里不列出，参考[配置 | NoneBot](https://v2.nonebot.dev/docs/tutorial/configuration#%E8%AF%A6%E7%BB%86%E9%85%8D%E7%BD%AE%E9%A1%B9)）：
 ```
+superuser=[]  # 能够发送超级命令的用户（JSON数组，格式为["onebot:123456", "kaiheila:1919810"]，下同）
+blocklist=[]  # Bot不响应的用户，可以避免Bot之间相互调用（JSON数组）
+
 pixiv_refresh_token=  # 前面获取的REFRESH_TOKEN
 pixiv_mongo_conn_url=  # MongoDB连接URL，格式：mongodb://<用户名>:<密码>@<主机>:<端口>/<数据库>
 pixiv_mongo_database_name=  # 连接的MongoDB数据库
@@ -98,21 +94,25 @@ pixiv_compression_enabled=False  # 启用插画压缩
 pixiv_compression_max_size=None  # 插画压缩最大尺寸
 pixiv_compression_quantity=None  # 插画压缩品质（0到100）
 
-pixiv_more_enabled=True  # 启用重复上一次请求（还要）功能
-
-pixiv_illust_query_enabled=True  # 启用插画查询（看看图）功能
-
-pixiv_tag_translation_enabled=True  # 启用搜索关键字翻译功能
+pixiv_query_to_me_only=False  # 只响应关于Bot的查询
+pixiv_command_to_me_only=False  # 只响应关于Bot的命令
 
 pixiv_query_cooldown=0  # 每次查询的冷却时间
-pixiv_no_query_cooldown_users=[]  # 在这个列表中的用户不受冷却时间的影响
+pixiv_no_query_cooldown_users=[]  # 在这个列表中的用户不受冷却时间的影响（JSON数组）
+pixiv_max_item_per_query=10  # 每个查询最多请求的插画数量
+
+pixiv_tag_translation_enabled=True  # 启用搜索关键字翻译功能（平时搜索时记录标签翻译，在查询时判断是否存在对应中日翻译）
+
+pixiv_more_enabled=True  # 启用重复上一次请求（还要）功能
+pixiv_query_expires_in=10*60  # 上一次请求的过期时间（单位：秒）
+
+pixiv_illust_query_enabled=True  # 启用插画查询（看看图）功能
 
 pixiv_ranking_query_enabled=True  # 启用榜单查询（看看榜）功能
 pixiv_ranking_default_mode=day  # 默认查询的榜单，可选值：day, week, month, day_male, day_female, week_original, week_rookie, day_manga
 pixiv_ranking_default_range=[1, 3]  # 默认查询的榜单范围
 pixiv_ranking_fetch_item=150  # 每次从服务器获取的榜单项数（查询的榜单范围必须在这个数目内）
 pixiv_ranking_max_item_per_query=5  # 每次榜单查询最多能查询多少项
-pixiv_ranking_max_item_per_msg=1  # 榜单查询的回复信息每条包含多少项
 
 pixiv_random_illust_query_enabled=True  # 启用关键字插画随机抽选（来张xx图）功能
 pixiv_random_illust_method=bookmark_proportion  # 随机抽选方法，下同，可选值：bookmark_proportion(概率与书签数成正比), view_proportion(概率与阅读量成正比), timedelta_proportion(概率与投稿时间和现在的时间差成正比), uniform(相等概率)
@@ -128,12 +128,12 @@ pixiv_random_recommended_illust_min_view=0
 pixiv_random_recommended_illust_max_page=40
 pixiv_random_recommended_illust_max_item=1000
 
-pixiv_random_related_illust_query_enabled = True  # 启用关联插画随机抽选（不够色）功能
-pixiv_random_related_illust_method = "bookmark_proportion"
-pixiv_random_related_illust_min_bookmark = 0
-pixiv_random_related_illust_min_view = 0
-pixiv_random_related_illust_max_page = 4
-pixiv_random_related_illust_max_item = 100
+pixiv_random_related_illust_query_enabled=True  # 启用关联插画随机抽选（不够色）功能
+pixiv_random_related_illust_method=bookmark_proportion
+pixiv_random_related_illust_min_bookmark=0
+pixiv_random_related_illust_min_view=0
+pixiv_random_related_illust_max_page=4
+pixiv_random_related_illust_max_item=100
 
 pixiv_random_user_illust_query_enabled=True  # 启用用户插画随机抽选（来张xx老师的图）功能
 pixiv_random_user_illust_method=timedelta_proportion
@@ -150,7 +150,7 @@ pixiv_random_bookmark_min_view=0
 pixiv_random_bookmark_max_page=2147483647
 pixiv_random_bookmark_max_item=2147483647
 
-pixiv_poke_action=random_recommended_illust  # 戳一戳的功能，可选值：空, ranking, random_recommended_illust, random_bookmark
+pixiv_poke_action=random_recommended_illust  # 【go-cqhttp限定】戳一戳功能，可选值：空, ranking, random_recommended_illust, random_bookmark
 ```
 
 ## Special Thanks
